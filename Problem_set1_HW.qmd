@@ -1,0 +1,346 @@
+---
+title: "Problem_set1_HW"
+author: "Herong Wang"
+format: 
+  html:
+   code-fold: true
+   code-summary: "Show the code"
+editor: visual
+---
+
+## Basic setup
+
+```{r}
+setwd("C:/Users/herongw/Desktop/Umich_Phd/2024fall/STAT506/Problem_set1")
+```
+
+## Problem 1 - Wine Data
+
+#### a. import data and name columns
+```{r}
+wine <- read.table("wine/wine.data", sep = ",", header = FALSE)
+colnames(wine) <- c("class", "Alcohol", "Malic_acid", "Ash", "Alcalinity_ash", "Magnesium",
+                    "Phenols", "Flavanoids", "Nonflavanoid_phenols", "Proanthocyanins",
+                    "Color_intensity", "Hue", "OD280_OD315", "Proline") 
+# colname information was retrieved from wine.names file
+```
+
+#### b. report the number of wine classes
+```{r}
+table(wine$class, useNA = "always")
+print("the number of wines within each class is correct as reported in “wine.names”")
+
+```
+
+#### c.1. What is the correlation between alcohol content and color intensity?
+```{r}
+print(paste("The correlation between alcohol content and color intensity is",
+            cor.test(wine$Alcohol, wine$Color_intensity)$estimate))
+```
+
+#### c.2. Which class has the highest correlation? Which has the lowest?
+```{r}
+class <- c(cor.test(~ Alcohol + Color_intensity, data = wine[wine$class == 1, ])$estimate,
+           cor.test(~ Alcohol + Color_intensity, data = wine[wine$class == 2, ])$estimate,
+           cor.test(~ Alcohol + Color_intensity, data = wine[wine$class == 3, ])$estimate)
+names(class) <- c("Class 1", "Class 2", "Class 3")
+
+print(paste(names(which.max(class)), "has the highest correlation, which is", max(class)))
+print(paste(names(which.min(class)), "has the highest correlation, which is", min(class)))
+```
+
+#### c.3. What is the alcohol content of the wine with the highest color intensity?
+```{r}
+print(paste("The alcohol content of the wine with highest color intensity is", 
+            wine[wine$Color_intensity == max(wine$Color_intensity), "Alcohol"]))
+```
+
+#### c.4. What percentage of wines had a higher content of proanthocyanins compare to ash?
+```{r}
+print(paste0((nrow(wine[wine$Proanthocyanins > wine$Ash,])/nrow(wine))*100, "%", 
+      " of wines had higher content of proanthocyanins compare to ash"))
+```
+
+#### d. Create a table identifying the average value of each variable, providing one row for the overall average, and one row per class with class averages
+```{r}
+average <- matrix(c(apply(wine[ ,-1], 2, mean),
+                    apply(wine[wine$class == 1 ,-1], 2, mean),
+                    apply(wine[wine$class == 2 ,-1], 2, mean),
+                    apply(wine[wine$class == 3 ,-1], 2, mean)), 
+                  byrow = TRUE, ncol = 13, dimnames = list(c("All wines average value", "Class 1 wines average value", "Class 2 wines average value", "Class 3 wines average value"), colnames(wine)[2:14]))
+print(average)
+```
+
+#### e. Carry out a series of t-tests to examine whether the level of phenols differs across the three classes.
+```{r}
+#with(wine, t.test(Phenols[class == 1], Phenols[class == 2]))
+#with(wine, t.test(Phenols[class == 2], Phenols[class == 3]))
+#with(wine, t.test(Phenols[class == 1], Phenols[class == 3]))
+
+#' The function is to manually calculate t-test for phenols difference between wine classes
+#' @param value1 is vector of phenols levels for one of the wine classes
+#' @param value2 is the vector of phenols levels for another wine classes to compare with value 1
+#' @return this function return the t statistics, degree of freedom and p value for the t-test
+
+cus.ttest <- function(value1, value2){
+  mean1 = mean(value1, na.rm = TRUE)
+  mean2 = mean(value2, na.rm = TRUE)
+  n1 = length(value1)
+  n2 = length(value2)
+  variance1 = sd(value1, na.rm = TRUE)^2
+  variance2 = sd(value2, na.rm = TRUE)^2
+  df = ((variance1/n1 + variance2/n2)^2) / (((variance1/n1)^2)/(n1-1) + ((variance2/n2)^2)/(n2-1))
+  t = (mean1 - mean2)/sqrt((variance1/n1) + (variance2/n2))
+  p = 2*pt(-abs(t), df)
+  #print(paste("The t statistic is", t))
+  #print(paste("The degree of freedom is", df))
+  #print(paste("The p value is", p))
+  return(list("t statistic" = t, 
+              "degree of freedom" = df,
+              "p value" = p))
+}
+
+
+append(cus.ttest(wine[wine$class==1,]$Phenols, wine[wine$class==2,]$Phenols),
+       list("comparison groups: class 1 and class 2"), after = 0)
+append(cus.ttest(wine[wine$class==1,]$Phenols, wine[wine$class==3,]$Phenols),
+       list("comparison groups: class 1 and class 3"), after = 0)
+append(cus.ttest(wine[wine$class==2,]$Phenols, wine[wine$class==3,]$Phenols),
+       list("comparison groups: class 2 and class 3"), after = 0)
+
+
+```
+
+## Problem 2 - AskAManager.org Data
+#### a. import data
+```{r}
+salary <- read.csv("AskAManager.csv")
+```
+
+#### b. Clean up the variable names. Simplify them.
+```{r}
+colnames(salary) <- c("X", "Timestamp", "Age", "Industry", "Title", "Title.cont", "Annual.salary", "Compensation",
+                      "Currency", "Currency.cont", "Income.cont", "Country", "State", "City", "Total.years", "Field.years",
+                      "Education", "Gender", "Race")
+colnames(salary)
+```
+
+#### c. Restrict the data to those being paid in US dollars (USD)
+```{r}
+table(salary$Currency, useNA = "always")
+salary.usd <- salary[salary$Currency == "USD", ]
+print(paste("The number of observations before restricting the data is", nrow(salary)))
+print(paste("The number of observations after restricting the data is", nrow(salary.usd)))
+```
+
+#### d. Assume no one starts working before age 18. Eliminate any rows for which their age, years of experience in their field, and years of experience total are impossible.
+```{r}
+table(salary.usd$Age, useNA = "always")
+table(salary.usd$Total.years, useNA = "always")
+table(salary.usd$Field.years, useNA = "always")
+
+salary.age <- salary.usd
+
+salary.age$Age = factor(salary.age$Age, levels = c("under 18", "18-24", "25-34", "35-44", "45-54", "55-64", "65 or over"), 
+                        labels = c(1, 2, 3, 4, 5, 6, 7), ordered = TRUE)
+salary.age$Field.years = factor(salary.age$Field.years, 
+                                levels = c("1 year or less", "2 - 4 years", "5-7 years", "8 - 10 years", "11 - 20 years", 
+                                           "21 - 30 years", "31 - 40 years", "41 years or more"),
+                                labels = c(1, 2, 3, 4, 5, 6, 7, 8), ordered = TRUE)
+salary.age$Total.years = factor(salary.age$Total.years, 
+                                levels = c("1 year or less", "2 - 4 years", "5-7 years", "8 - 10 years", "11 - 20 years", 
+                                           "21 - 30 years", "31 - 40 years", "41 years or more"),
+                                labels = c(1, 2, 3, 4, 5, 6, 7, 8), ordered = TRUE)
+
+# exclude Age < 18
+salary.age1 <- salary.age[salary.age$Age != 1, ]
+
+# exclude Total years < Field years
+salary.age2 <- salary.age1[salary.age1$Total.years >= salary.age1$Field.years, ]
+
+# exclude Age - work (Total/Field) years < 18: 1) Age == 18-24 while Total.year or Field year >= 8-10
+#                                              2) Age == 25-34 while Total.year or Field year >= 21-30
+#                                              3) Age == 35-44 while Total.year or Field year >= 31-40
+#                                              4) Age == 45-54 while Total.year or Field year == 41 years or more
+
+salary.age3 <- salary.age2[!((salary.age2$Age == 2 & salary.age2$Total.years >= 4) |
+                           (salary.age2$Age == 3 & salary.age2$Total.years >= 6) |
+                           (salary.age2$Age == 4 & salary.age2$Total.years >= 7) |
+                           (salary.age2$Age == 5 & salary.age2$Total.years >= 8)), ]
+
+print(paste("The number of observations after restricting the data is", nrow(salary.age3)))
+
+```
+
+#### e. A lot of the incomes are likely false. Eliminate any rows with extremely low or extremely high salaries.
+```{r}
+z.salary <- (salary.age3$Annual.salary-mean(salary.age3$Annual.salary))/sd(salary.age3$Annual.salary)
+boxplot(z.salary)
+salary.age3[which(z.salary > 100), ]
+# I will exclude this one due to his pretty quite high salary and relative short years of experience
+
+salary.income <- salary.age3[-which(z.salary > 100),]
+z.salary[which(z.salary > 100)] <- NA
+boxplot(z.salary)
+salary.age3[which(z.salary > 2), ]
+# The remaining high income makes sense to me. I will explore the low income next
+
+# Annual salary <=1000 without a compensation is suspicious for me
+# I found the low salary for people with X as 8740, 13538, 15335, 20471, 27761, 27830, 27997, 28015, 28021 make sense to me
+# because they were student or unemployed
+salary.income <- salary.income[!(salary.income$Annual.salary <= 1000 & salary.income$Compensation %in% c(0, NA)&
+                                !salary.income$X %in% c(8740, 13538, 15335, 20471, 27761, 27830, 27997, 28015, 28021)), ]
+
+print(paste("The number of observations with feasible annual income is", nrow(salary.income)))
+
+```
+
+#### f. whether there is a statistical association between education and salary, controlling for years of experience.
+```{r}
+table(salary.income$Education, useNA = "always")
+salary.income[salary.income$Education == "", "Education"] <- NA
+salary.income$Education <- factor(salary.income$Education, 
+                                levels = c("High School", "Some college", "College degree", "Master's degree", 
+                                           "Professional degree (MD, JD, etc.)", "PhD"), 
+                                labels = c("High School", "Some college", "College degree", "Master's degree", 
+                                           "Professional degree (MD, JD, etc.)", "PhD"))
+
+lin <- lm(Annual.salary ~ Education + as.numeric(Total.years), data = salary.income)
+summary(lin)
+
+print("The assocaiton between education and salary, controlling for years of experience is statistically significant, 
+      where higher education is associated with higher salary")
+```
+
+# Problem 3 - Palindromic Numbers
+#### Write function isPalindromic that checks if a given positive integer is a palindrome
+```{r}
+#' First to create a function to reverse integer
+#' @param x a integer input
+#' @return The integer with reversed digits 
+
+reverse <- function(x){
+  b <- as.character(x)
+  char <- as.character(x)
+  for (i in 1:nchar(x)) {
+    substring(char, i, i) <- substring(b, (nchar(x) + 1 - i), (nchar(x) + 1 - i))
+  }
+  num <- as.integer(char)
+  return(num)
+}
+
+#' Now is the function to check if the input is palindromic number
+#' @param x is the input 
+#' @return a list with logical value of if the input is palindromic number and number with reversed digits
+isPalindromic <- function(x) {
+  if (!is.numeric(x)) {
+    warning("Input must be numeric, trying to convert it")
+    suppressWarnings(y <- as.numeric(x))
+    if (all(is.na(y))) {
+      stop("Please input numberic value, or value convertible to number")
+    } else if (y == round(y)){
+      if (y == reverse(y)){
+        logis <- TRUE
+      } else {
+        logis <- FALSE
+      }
+      ll <- list(isPalindromic = logis,
+             reversed = reverse(x))
+      return(ll)
+    } else {
+      stop("Please input integer, or convertible integer")
+    }
+  } 
+  if (is.numeric(x)) {
+    if (x == round(x)){
+      if (x == reverse(x)){
+        logis <- TRUE
+      } else {
+        logis <- FALSE
+      }
+      ll <- list(isPalindromic = logis,
+             reversed = reverse(x))
+      return(ll)
+    } else {
+      stop("Please input integer")
+    }
+  }
+
+}
+
+
+```
+
+#### Create a function nextPalindrome that finds the next palindromic number strictly greater than the input
+```{r}
+
+#' Now is the function to find the next palindromic number strictly greater than the input
+#' @param x is the input. 
+#' @param x if has decimal, will round it to ceiling 
+#' @return the next palindromic number strictly greater than the input
+
+nextPalindromic <- function(x) {
+  if (!is.numeric(x)) {
+    warning("Input must be numeric, trying to convert it")
+    suppressWarnings(y <- as.numeric(x))
+    if (all(is.na(y))) {
+      stop("Please input numberic value, or value convertible to number")
+    } else if (y == round(y)){
+      if (y == reverse(y)){
+        y <- y + 1
+        while (y != reverse(y)) {
+        y = y + 1
+      }
+        return(paste("Already a palindromic number. The next one is", y))
+      } else {
+        while (y != reverse(y)) {
+        y <- y + 1
+      }
+      return(y)
+      }
+    } else {
+      warning("Round it to ceiling number")
+      suppressWarnings(z <- ceiling(y))
+      while (z != reverse(z)) {
+        z <- z + 1
+      }
+      return(z)
+    }
+  } 
+  if (is.numeric(x)) {
+    if (x == round(x)){
+      if (x != reverse(x)){
+        while (x != reverse(x)) {
+        x <- x + 1
+      }
+      return(x)} else {
+        x <- x +1 
+        while (x != reverse(x)) {
+        x = x + 1
+      }
+      return(paste("Already a palindromic number. The next one is", x))
+      }
+      
+    } else {
+      warning("Round it to ceiling number")
+      suppressWarnings(x <- ceiling(x))
+      while (x != reverse(x)) {
+        x <- x + 1
+      }
+      return(x)
+    }
+  }
+
+}
+
+```
+
+#### Use these functions to find the next palindrome for each of the following:
+```{r}
+nextPalindromic(391)
+nextPalindromic(9928)
+nextPalindromic(19272719)
+nextPalindromic(109)
+nextPalindromic(2)
+```
+

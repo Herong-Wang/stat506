@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Herong Wang">
+
+<title>Problem_set1_HW</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="Problem_set1_HW_files/libs/clipboard/clipboard.min.js"></script>
+<script src="Problem_set1_HW_files/libs/quarto-html/quarto.js"></script>
+<script src="Problem_set1_HW_files/libs/quarto-html/popper.min.js"></script>
+<script src="Problem_set1_HW_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="Problem_set1_HW_files/libs/quarto-html/anchor.min.js"></script>
+<link href="Problem_set1_HW_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="Problem_set1_HW_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="Problem_set1_HW_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="Problem_set1_HW_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="Problem_set1_HW_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Problem_set1_HW</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Herong Wang </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="basic-setup" class="level2">
+<h2 class="anchored" data-anchor-id="basic-setup">Basic setup</h2>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(<span class="st">"C:/Users/herongw/Desktop/Umich_Phd/2024fall/STAT506/Problem_set1"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="problem-1---wine-data" class="level2">
+<h2 class="anchored" data-anchor-id="problem-1---wine-data">Problem 1 - Wine Data</h2>
+<section id="a.-import-data-and-name-columns" class="level4">
+<h4 class="anchored" data-anchor-id="a.-import-data-and-name-columns">a. import data and name columns</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>wine <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">"wine/wine.data"</span>, <span class="at">sep =</span> <span class="st">","</span>, <span class="at">header =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(wine) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"class"</span>, <span class="st">"Alcohol"</span>, <span class="st">"Malic_acid"</span>, <span class="st">"Ash"</span>, <span class="st">"Alcalinity_ash"</span>, <span class="st">"Magnesium"</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"Phenols"</span>, <span class="st">"Flavanoids"</span>, <span class="st">"Nonflavanoid_phenols"</span>, <span class="st">"Proanthocyanins"</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>                    <span class="st">"Color_intensity"</span>, <span class="st">"Hue"</span>, <span class="st">"OD280_OD315"</span>, <span class="st">"Proline"</span>) </span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># colname information was retrieved from wine.names file</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="b.-report-the-number-of-wine-classes" class="level4">
+<h4 class="anchored" data-anchor-id="b.-report-the-number-of-wine-classes">b. report the number of wine classes</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(wine<span class="sc">$</span>class, <span class="at">useNA =</span> <span class="st">"always"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+   1    2    3 &lt;NA&gt; 
+  59   71   48    0 </code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">"the number of wines within each class is correct as reported in “wine.names”"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "the number of wines within each class is correct as reported in “wine.names”"</code></pre>
+</div>
+</div>
+</section>
+<section id="c.1.-what-is-the-correlation-between-alcohol-content-and-color-intensity" class="level4">
+<h4 class="anchored" data-anchor-id="c.1.-what-is-the-correlation-between-alcohol-content-and-color-intensity">c.1. What is the correlation between alcohol content and color intensity?</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"The correlation between alcohol content and color intensity is"</span>,</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>            <span class="fu">cor.test</span>(wine<span class="sc">$</span>Alcohol, wine<span class="sc">$</span>Color_intensity)<span class="sc">$</span>estimate))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "The correlation between alcohol content and color intensity is 0.546364195083704"</code></pre>
+</div>
+</div>
+</section>
+<section id="c.2.-which-class-has-the-highest-correlation-which-has-the-lowest" class="level4">
+<h4 class="anchored" data-anchor-id="c.2.-which-class-has-the-highest-correlation-which-has-the-lowest">c.2. Which class has the highest correlation? Which has the lowest?</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>class <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">cor.test</span>(<span class="sc">~</span> Alcohol <span class="sc">+</span> Color_intensity, <span class="at">data =</span> wine[wine<span class="sc">$</span>class <span class="sc">==</span> <span class="dv">1</span>, ])<span class="sc">$</span>estimate,</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>           <span class="fu">cor.test</span>(<span class="sc">~</span> Alcohol <span class="sc">+</span> Color_intensity, <span class="at">data =</span> wine[wine<span class="sc">$</span>class <span class="sc">==</span> <span class="dv">2</span>, ])<span class="sc">$</span>estimate,</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>           <span class="fu">cor.test</span>(<span class="sc">~</span> Alcohol <span class="sc">+</span> Color_intensity, <span class="at">data =</span> wine[wine<span class="sc">$</span>class <span class="sc">==</span> <span class="dv">3</span>, ])<span class="sc">$</span>estimate)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(class) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Class 1"</span>, <span class="st">"Class 2"</span>, <span class="st">"Class 3"</span>)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="fu">names</span>(<span class="fu">which.max</span>(class)), <span class="st">"has the highest correlation, which is"</span>, <span class="fu">max</span>(class)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Class 1 has the highest correlation, which is 0.408291320511201"</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="fu">names</span>(<span class="fu">which.min</span>(class)), <span class="st">"has the highest correlation, which is"</span>, <span class="fu">min</span>(class)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Class 2 has the highest correlation, which is 0.269789134097213"</code></pre>
+</div>
+</div>
+</section>
+<section id="c.3.-what-is-the-alcohol-content-of-the-wine-with-the-highest-color-intensity" class="level4">
+<h4 class="anchored" data-anchor-id="c.3.-what-is-the-alcohol-content-of-the-wine-with-the-highest-color-intensity">c.3. What is the alcohol content of the wine with the highest color intensity?</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"The alcohol content of the wine with highest color intensity is"</span>, </span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>            wine[wine<span class="sc">$</span>Color_intensity <span class="sc">==</span> <span class="fu">max</span>(wine<span class="sc">$</span>Color_intensity), <span class="st">"Alcohol"</span>]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "The alcohol content of the wine with highest color intensity is 14.34"</code></pre>
+</div>
+</div>
+</section>
+<section id="c.4.-what-percentage-of-wines-had-a-higher-content-of-proanthocyanins-compare-to-ash" class="level4">
+<h4 class="anchored" data-anchor-id="c.4.-what-percentage-of-wines-had-a-higher-content-of-proanthocyanins-compare-to-ash">c.4. What percentage of wines had a higher content of proanthocyanins compare to ash?</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste0</span>((<span class="fu">nrow</span>(wine[wine<span class="sc">$</span>Proanthocyanins <span class="sc">&gt;</span> wine<span class="sc">$</span>Ash,])<span class="sc">/</span><span class="fu">nrow</span>(wine))<span class="sc">*</span><span class="dv">100</span>, <span class="st">"%"</span>, </span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>      <span class="st">" of wines had higher content of proanthocyanins compare to ash"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "8.42696629213483% of wines had higher content of proanthocyanins compare to ash"</code></pre>
+</div>
+</div>
+</section>
+<section id="d.-create-a-table-identifying-the-average-value-of-each-variable-providing-one-row-for-the-overall-average-and-one-row-per-class-with-class-averages" class="level4">
+<h4 class="anchored" data-anchor-id="d.-create-a-table-identifying-the-average-value-of-each-variable-providing-one-row-for-the-overall-average-and-one-row-per-class-with-class-averages">d.&nbsp;Create a table identifying the average value of each variable, providing one row for the overall average, and one row per class with class averages</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>average <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="fu">apply</span>(wine[ ,<span class="sc">-</span><span class="dv">1</span>], <span class="dv">2</span>, mean),</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">apply</span>(wine[wine<span class="sc">$</span>class <span class="sc">==</span> <span class="dv">1</span> ,<span class="sc">-</span><span class="dv">1</span>], <span class="dv">2</span>, mean),</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">apply</span>(wine[wine<span class="sc">$</span>class <span class="sc">==</span> <span class="dv">2</span> ,<span class="sc">-</span><span class="dv">1</span>], <span class="dv">2</span>, mean),</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">apply</span>(wine[wine<span class="sc">$</span>class <span class="sc">==</span> <span class="dv">3</span> ,<span class="sc">-</span><span class="dv">1</span>], <span class="dv">2</span>, mean)), </span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>                  <span class="at">byrow =</span> <span class="cn">TRUE</span>, <span class="at">ncol =</span> <span class="dv">13</span>, <span class="at">dimnames =</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="st">"All wines average value"</span>, <span class="st">"Class 1 wines average value"</span>, <span class="st">"Class 2 wines average value"</span>, <span class="st">"Class 3 wines average value"</span>), <span class="fu">colnames</span>(wine)[<span class="dv">2</span><span class="sc">:</span><span class="dv">14</span>]))</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(average)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>                             Alcohol Malic_acid      Ash Alcalinity_ash
+All wines average value     13.00062   2.336348 2.366517       19.49494
+Class 1 wines average value 13.74475   2.010678 2.455593       17.03729
+Class 2 wines average value 12.27873   1.932676 2.244789       20.23803
+Class 3 wines average value 13.15375   3.333750 2.437083       21.41667
+                            Magnesium  Phenols Flavanoids Nonflavanoid_phenols
+All wines average value      99.74157 2.295112  2.0292697            0.3618539
+Class 1 wines average value 106.33898 2.840169  2.9823729            0.2900000
+Class 2 wines average value  94.54930 2.258873  2.0808451            0.3636620
+Class 3 wines average value  99.31250 1.678750  0.7814583            0.4475000
+                            Proanthocyanins Color_intensity       Hue
+All wines average value            1.590899        5.058090 0.9574494
+Class 1 wines average value        1.899322        5.528305 1.0620339
+Class 2 wines average value        1.630282        3.086620 1.0562817
+Class 3 wines average value        1.153542        7.396250 0.6827083
+                            OD280_OD315   Proline
+All wines average value        2.611685  746.8933
+Class 1 wines average value    3.157797 1115.7119
+Class 2 wines average value    2.785352  519.5070
+Class 3 wines average value    1.683542  629.8958</code></pre>
+</div>
+</div>
+</section>
+<section id="e.-carry-out-a-series-of-t-tests-to-examine-whether-the-level-of-phenols-differs-across-the-three-classes." class="level4">
+<h4 class="anchored" data-anchor-id="e.-carry-out-a-series-of-t-tests-to-examine-whether-the-level-of-phenols-differs-across-the-three-classes.">e. Carry out a series of t-tests to examine whether the level of phenols differs across the three classes.</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co">#with(wine, t.test(Phenols[class == 1], Phenols[class == 2]))</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="co">#with(wine, t.test(Phenols[class == 2], Phenols[class == 3]))</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="co">#with(wine, t.test(Phenols[class == 1], Phenols[class == 3]))</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="co">#' The function is to manually calculate t-test for phenols difference between wine classes</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param value1 is vector of phenols levels for one of the wine classes</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param value2 is the vector of phenols levels for another wine classes to compare with value 1</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="co">#' @return this function return the t statistics, degree of freedom and p value for the t-test</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>cus.ttest <span class="ot">&lt;-</span> <span class="cf">function</span>(value1, value2){</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>  mean1 <span class="ot">=</span> <span class="fu">mean</span>(value1, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>  mean2 <span class="ot">=</span> <span class="fu">mean</span>(value2, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>  n1 <span class="ot">=</span> <span class="fu">length</span>(value1)</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>  n2 <span class="ot">=</span> <span class="fu">length</span>(value2)</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>  variance1 <span class="ot">=</span> <span class="fu">sd</span>(value1, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>  variance2 <span class="ot">=</span> <span class="fu">sd</span>(value2, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">=</span> ((variance1<span class="sc">/</span>n1 <span class="sc">+</span> variance2<span class="sc">/</span>n2)<span class="sc">^</span><span class="dv">2</span>) <span class="sc">/</span> (((variance1<span class="sc">/</span>n1)<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span>(n1<span class="dv">-1</span>) <span class="sc">+</span> ((variance2<span class="sc">/</span>n2)<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span>(n2<span class="dv">-1</span>))</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>  t <span class="ot">=</span> (mean1 <span class="sc">-</span> mean2)<span class="sc">/</span><span class="fu">sqrt</span>((variance1<span class="sc">/</span>n1) <span class="sc">+</span> (variance2<span class="sc">/</span>n2))</span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>  p <span class="ot">=</span> <span class="dv">2</span><span class="sc">*</span><span class="fu">pt</span>(<span class="sc">-</span><span class="fu">abs</span>(t), df)</span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>  <span class="co">#print(paste("The t statistic is", t))</span></span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>  <span class="co">#print(paste("The degree of freedom is", df))</span></span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>  <span class="co">#print(paste("The p value is", p))</span></span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">list</span>(<span class="st">"t statistic"</span> <span class="ot">=</span> t, </span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a>              <span class="st">"degree of freedom"</span> <span class="ot">=</span> df,</span>
+<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a>              <span class="st">"p value"</span> <span class="ot">=</span> p))</span>
+<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-29"><a href="#cb19-29" aria-hidden="true" tabindex="-1"></a><span class="fu">append</span>(<span class="fu">cus.ttest</span>(wine[wine<span class="sc">$</span>class<span class="sc">==</span><span class="dv">1</span>,]<span class="sc">$</span>Phenols, wine[wine<span class="sc">$</span>class<span class="sc">==</span><span class="dv">2</span>,]<span class="sc">$</span>Phenols),</span>
+<span id="cb19-30"><a href="#cb19-30" aria-hidden="true" tabindex="-1"></a>       <span class="fu">list</span>(<span class="st">"comparison groups: class 1 and class 2"</span>), <span class="at">after =</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[[1]]
+[1] "comparison groups: class 1 and class 2"
+
+$`t statistic`
+[1] 7.420649
+
+$`degree of freedom`
+[1] 119.1369
+
+$`p value`
+[1] 1.889329e-11</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">append</span>(<span class="fu">cus.ttest</span>(wine[wine<span class="sc">$</span>class<span class="sc">==</span><span class="dv">1</span>,]<span class="sc">$</span>Phenols, wine[wine<span class="sc">$</span>class<span class="sc">==</span><span class="dv">3</span>,]<span class="sc">$</span>Phenols),</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>       <span class="fu">list</span>(<span class="st">"comparison groups: class 1 and class 3"</span>), <span class="at">after =</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[[1]]
+[1] "comparison groups: class 1 and class 3"
+
+$`t statistic`
+[1] 17.12025
+
+$`degree of freedom`
+[1] 98.35622
+
+$`p value`
+[1] 2.915038e-31</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">append</span>(<span class="fu">cus.ttest</span>(wine[wine<span class="sc">$</span>class<span class="sc">==</span><span class="dv">2</span>,]<span class="sc">$</span>Phenols, wine[wine<span class="sc">$</span>class<span class="sc">==</span><span class="dv">3</span>,]<span class="sc">$</span>Phenols),</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>       <span class="fu">list</span>(<span class="st">"comparison groups: class 2 and class 3"</span>), <span class="at">after =</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[[1]]
+[1] "comparison groups: class 2 and class 3"
+
+$`t statistic`
+[1] 7.012505
+
+$`degree of freedom`
+[1] 116.9074
+
+$`p value`
+[1] 1.621575e-10</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="problem-2---askamanager.org-data" class="level2">
+<h2 class="anchored" data-anchor-id="problem-2---askamanager.org-data">Problem 2 - AskAManager.org Data</h2>
+<section id="a.-import-data" class="level4">
+<h4 class="anchored" data-anchor-id="a.-import-data">a. import data</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>salary <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"AskAManager.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="b.-clean-up-the-variable-names.-simplify-them." class="level4">
+<h4 class="anchored" data-anchor-id="b.-clean-up-the-variable-names.-simplify-them.">b. Clean up the variable names. Simplify them.</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(salary) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"X"</span>, <span class="st">"Timestamp"</span>, <span class="st">"Age"</span>, <span class="st">"Industry"</span>, <span class="st">"Title"</span>, <span class="st">"Title.cont"</span>, <span class="st">"Annual.salary"</span>, <span class="st">"Compensation"</span>,</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>                      <span class="st">"Currency"</span>, <span class="st">"Currency.cont"</span>, <span class="st">"Income.cont"</span>, <span class="st">"Country"</span>, <span class="st">"State"</span>, <span class="st">"City"</span>, <span class="st">"Total.years"</span>, <span class="st">"Field.years"</span>,</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>                      <span class="st">"Education"</span>, <span class="st">"Gender"</span>, <span class="st">"Race"</span>)</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(salary)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "X"             "Timestamp"     "Age"           "Industry"     
+ [5] "Title"         "Title.cont"    "Annual.salary" "Compensation" 
+ [9] "Currency"      "Currency.cont" "Income.cont"   "Country"      
+[13] "State"         "City"          "Total.years"   "Field.years"  
+[17] "Education"     "Gender"        "Race"         </code></pre>
+</div>
+</div>
+</section>
+<section id="c.-restrict-the-data-to-those-being-paid-in-us-dollars-usd" class="level4">
+<h4 class="anchored" data-anchor-id="c.-restrict-the-data-to-those-being-paid-in-us-dollars-usd">c.&nbsp;Restrict the data to those being paid in US dollars (USD)</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(salary<span class="sc">$</span>Currency, <span class="at">useNA =</span> <span class="st">"always"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+AUD/NZD     CAD     CHF     EUR     GBP     HKD     JPY   Other     SEK     USD 
+    504    1673      37     643    1591       4      23     160      37   23374 
+    ZAR    &lt;NA&gt; 
+     16       0 </code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>salary.usd <span class="ot">&lt;-</span> salary[salary<span class="sc">$</span>Currency <span class="sc">==</span> <span class="st">"USD"</span>, ]</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"The number of observations before restricting the data is"</span>, <span class="fu">nrow</span>(salary)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "The number of observations before restricting the data is 28062"</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"The number of observations after restricting the data is"</span>, <span class="fu">nrow</span>(salary.usd)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "The number of observations after restricting the data is 23374"</code></pre>
+</div>
+</div>
+</section>
+<section id="d.-assume-no-one-starts-working-before-age-18.-eliminate-any-rows-for-which-their-age-years-of-experience-in-their-field-and-years-of-experience-total-are-impossible." class="level4">
+<h4 class="anchored" data-anchor-id="d.-assume-no-one-starts-working-before-age-18.-eliminate-any-rows-for-which-their-age-years-of-experience-in-their-field-and-years-of-experience-total-are-impossible.">d.&nbsp;Assume no one starts working before age 18. Eliminate any rows for which their age, years of experience in their field, and years of experience total are impossible.</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(salary.usd<span class="sc">$</span>Age, <span class="at">useNA =</span> <span class="st">"always"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+     18-24      25-34      35-44      45-54      55-64 65 or over   under 18 
+       991      10386       8323       2700        875         86         13 
+      &lt;NA&gt; 
+         0 </code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(salary.usd<span class="sc">$</span>Total.years, <span class="at">useNA =</span> <span class="st">"always"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+  1 year or less    11 - 20 years      2 - 4 years    21 - 30 years 
+             410             8137             2450             3066 
+   31 - 40 years 41 years or more        5-7 years     8 - 10 years 
+             735              112             4016             4448 
+            &lt;NA&gt; 
+               0 </code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(salary.usd<span class="sc">$</span>Field.years, <span class="at">useNA =</span> <span class="st">"always"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+  1 year or less    11 - 20 years      2 - 4 years    21 - 30 years 
+            1180             5523             5045             1573 
+   31 - 40 years 41 years or more        5-7 years     8 - 10 years 
+             333               34             5460             4226 
+            &lt;NA&gt; 
+               0 </code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>salary.age <span class="ot">&lt;-</span> salary.usd</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>salary.age<span class="sc">$</span>Age <span class="ot">=</span> <span class="fu">factor</span>(salary.age<span class="sc">$</span>Age, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"under 18"</span>, <span class="st">"18-24"</span>, <span class="st">"25-34"</span>, <span class="st">"35-44"</span>, <span class="st">"45-54"</span>, <span class="st">"55-64"</span>, <span class="st">"65 or over"</span>), </span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>                        <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>, <span class="dv">7</span>), <span class="at">ordered =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>salary.age<span class="sc">$</span>Field.years <span class="ot">=</span> <span class="fu">factor</span>(salary.age<span class="sc">$</span>Field.years, </span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>                                <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"1 year or less"</span>, <span class="st">"2 - 4 years"</span>, <span class="st">"5-7 years"</span>, <span class="st">"8 - 10 years"</span>, <span class="st">"11 - 20 years"</span>, </span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>                                           <span class="st">"21 - 30 years"</span>, <span class="st">"31 - 40 years"</span>, <span class="st">"41 years or more"</span>),</span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>                                <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>, <span class="dv">7</span>, <span class="dv">8</span>), <span class="at">ordered =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>salary.age<span class="sc">$</span>Total.years <span class="ot">=</span> <span class="fu">factor</span>(salary.age<span class="sc">$</span>Total.years, </span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a>                                <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"1 year or less"</span>, <span class="st">"2 - 4 years"</span>, <span class="st">"5-7 years"</span>, <span class="st">"8 - 10 years"</span>, <span class="st">"11 - 20 years"</span>, </span>
+<span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a>                                           <span class="st">"21 - 30 years"</span>, <span class="st">"31 - 40 years"</span>, <span class="st">"41 years or more"</span>),</span>
+<span id="cb40-12"><a href="#cb40-12" aria-hidden="true" tabindex="-1"></a>                                <span class="at">labels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>, <span class="dv">7</span>, <span class="dv">8</span>), <span class="at">ordered =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb40-13"><a href="#cb40-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-14"><a href="#cb40-14" aria-hidden="true" tabindex="-1"></a><span class="co"># exclude Age &lt; 18</span></span>
+<span id="cb40-15"><a href="#cb40-15" aria-hidden="true" tabindex="-1"></a>salary.age1 <span class="ot">&lt;-</span> salary.age[salary.age<span class="sc">$</span>Age <span class="sc">!=</span> <span class="dv">1</span>, ]</span>
+<span id="cb40-16"><a href="#cb40-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-17"><a href="#cb40-17" aria-hidden="true" tabindex="-1"></a><span class="co"># exclude Total years &lt; Field years</span></span>
+<span id="cb40-18"><a href="#cb40-18" aria-hidden="true" tabindex="-1"></a>salary.age2 <span class="ot">&lt;-</span> salary.age1[salary.age1<span class="sc">$</span>Total.years <span class="sc">&gt;=</span> salary.age1<span class="sc">$</span>Field.years, ]</span>
+<span id="cb40-19"><a href="#cb40-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-20"><a href="#cb40-20" aria-hidden="true" tabindex="-1"></a><span class="co"># exclude Age - work (Total/Field) years &lt; 18: 1) Age == 18-24 while Total.year or Field year &gt;= 8-10</span></span>
+<span id="cb40-21"><a href="#cb40-21" aria-hidden="true" tabindex="-1"></a><span class="co">#                                              2) Age == 25-34 while Total.year or Field year &gt;= 21-30</span></span>
+<span id="cb40-22"><a href="#cb40-22" aria-hidden="true" tabindex="-1"></a><span class="co">#                                              3) Age == 35-44 while Total.year or Field year &gt;= 31-40</span></span>
+<span id="cb40-23"><a href="#cb40-23" aria-hidden="true" tabindex="-1"></a><span class="co">#                                              4) Age == 45-54 while Total.year or Field year == 41 years or more</span></span>
+<span id="cb40-24"><a href="#cb40-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-25"><a href="#cb40-25" aria-hidden="true" tabindex="-1"></a>salary.age3 <span class="ot">&lt;-</span> salary.age2[<span class="sc">!</span>((salary.age2<span class="sc">$</span>Age <span class="sc">==</span> <span class="dv">2</span> <span class="sc">&amp;</span> salary.age2<span class="sc">$</span>Total.years <span class="sc">&gt;=</span> <span class="dv">4</span>) <span class="sc">|</span></span>
+<span id="cb40-26"><a href="#cb40-26" aria-hidden="true" tabindex="-1"></a>                           (salary.age2<span class="sc">$</span>Age <span class="sc">==</span> <span class="dv">3</span> <span class="sc">&amp;</span> salary.age2<span class="sc">$</span>Total.years <span class="sc">&gt;=</span> <span class="dv">6</span>) <span class="sc">|</span></span>
+<span id="cb40-27"><a href="#cb40-27" aria-hidden="true" tabindex="-1"></a>                           (salary.age2<span class="sc">$</span>Age <span class="sc">==</span> <span class="dv">4</span> <span class="sc">&amp;</span> salary.age2<span class="sc">$</span>Total.years <span class="sc">&gt;=</span> <span class="dv">7</span>) <span class="sc">|</span></span>
+<span id="cb40-28"><a href="#cb40-28" aria-hidden="true" tabindex="-1"></a>                           (salary.age2<span class="sc">$</span>Age <span class="sc">==</span> <span class="dv">5</span> <span class="sc">&amp;</span> salary.age2<span class="sc">$</span>Total.years <span class="sc">&gt;=</span> <span class="dv">8</span>)), ]</span>
+<span id="cb40-29"><a href="#cb40-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-30"><a href="#cb40-30" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"The number of observations after restricting the data is"</span>, <span class="fu">nrow</span>(salary.age3)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "The number of observations after restricting the data is 23116"</code></pre>
+</div>
+</div>
+</section>
+<section id="e.-a-lot-of-the-incomes-are-likely-false.-eliminate-any-rows-with-extremely-low-or-extremely-high-salaries." class="level4">
+<h4 class="anchored" data-anchor-id="e.-a-lot-of-the-incomes-are-likely-false.-eliminate-any-rows-with-extremely-low-or-extremely-high-salaries.">e. A lot of the incomes are likely false. Eliminate any rows with extremely low or extremely high salaries.</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>z.salary <span class="ot">&lt;-</span> (salary.age3<span class="sc">$</span>Annual.salary<span class="sc">-</span><span class="fu">mean</span>(salary.age3<span class="sc">$</span>Annual.salary))<span class="sc">/</span><span class="fu">sd</span>(salary.age3<span class="sc">$</span>Annual.salary)</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(z.salary)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="Problem_set1_HW_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>salary.age3[<span class="fu">which</span>(z.salary <span class="sc">&gt;</span> <span class="dv">100</span>), ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>        X          Timestamp Age                       Industry
+3606 3606 4/27/2021 12:11:17   3 Utilities &amp; Telecommunications
+                  Title Title.cont Annual.salary Compensation Currency
+3606 Operations Manager                 1.02e+08           NA      USD
+     Currency.cont
+3606           COP
+                                                                                        Income.cont
+3606 Colombian peso - converting to usd it seems low, but in terms of local value, it is quite high
+      Country State   City Total.years Field.years    Education Gender
+3606 Colombia       Bogota           4           1 Some college    Man
+                                    Race
+3606 Hispanic, Latino, or Spanish origin</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co"># I will exclude this one due to his pretty quite high salary and relative short years of experience</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>salary.income <span class="ot">&lt;-</span> salary.age3[<span class="sc">-</span><span class="fu">which</span>(z.salary <span class="sc">&gt;</span> <span class="dv">100</span>),]</span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>z.salary[<span class="fu">which</span>(z.salary <span class="sc">&gt;</span> <span class="dv">100</span>)] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a><span class="fu">boxplot</span>(z.salary)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="Problem_set1_HW_files/figure-html/unnamed-chunk-14-2.png" class="img-fluid" width="672"></p>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>salary.age3[<span class="fu">which</span>(z.salary <span class="sc">&gt;</span> <span class="dv">2</span>), ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>          X          Timestamp Age          Industry
+2125   2125 4/27/2021 11:38:28   6      Art &amp; Design
+5756   5756 4/27/2021 13:22:34   3       Health care
+6784   6784 4/27/2021 14:08:47   3 Computing or Tech
+15510 15510 4/28/2021 17:09:29   4 Computing or Tech
+26467 26467  6/14/2021 4:19:17   6             Sales
+28044 28044  5/27/2024 2:47:26   3 Computing or Tech
+                                                Title Title.cont Annual.salary
+2125                                   Owner and CEO                   3000000
+5756  Attending Physician (general internal medicine)                  1900000
+6784                      Principal Software Engineer                  1650000
+15510                                 Product Manager                  2111538
+26467                            Inside sales manager                  5000044
+28044                                            Lead                  2600000
+      Compensation Currency Currency.cont Income.cont       Country
+2125            NA      USD                                     USA
+5756             0      USD                                     USA
+6784         25000      USD                           United States
+15510        84610      USD                               Singapore
+26467         4000      USD                                     Usa
+28044           NA      USD                                     USA
+              State      City Total.years Field.years
+2125       New York New York            6           6
+5756    Connecticut New Haven           3           3
+6784  Massachusetts    Boston           4           3
+15510               Singapore           5           5
+26467    New Jersey Pinebrook           7           6
+28044       Florida   Newyork           4           2
+                               Education Gender                           Race
+2125                     Master's degree  Woman                          White
+5756  Professional degree (MD, JD, etc.)  Woman                          White
+6784                     Master's degree    Man Asian or Asian American, White
+15510                     College degree    Man        Asian or Asian American
+26467                    Master's degree  Woman      Black or African American
+28044                                       Man                               </code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The remaining high income makes sense to me. I will explore the low income next</span></span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Annual salary &lt;=1000 without a compensation is suspicious for me</span></span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a><span class="co"># I found the low salary for people with X as 8740, 13538, 15335, 20471, 27761, 27830, 27997, 28015, 28021 make sense to me</span></span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a><span class="co"># because they were student or unemployed</span></span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>salary.income <span class="ot">&lt;-</span> salary.income[<span class="sc">!</span>(salary.income<span class="sc">$</span>Annual.salary <span class="sc">&lt;=</span> <span class="dv">1000</span> <span class="sc">&amp;</span> salary.income<span class="sc">$</span>Compensation <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="cn">NA</span>)<span class="sc">&amp;</span></span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a>                                <span class="sc">!</span>salary.income<span class="sc">$</span>X <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">8740</span>, <span class="dv">13538</span>, <span class="dv">15335</span>, <span class="dv">20471</span>, <span class="dv">27761</span>, <span class="dv">27830</span>, <span class="dv">27997</span>, <span class="dv">28015</span>, <span class="dv">28021</span>)), ]</span>
+<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-9"><a href="#cb48-9" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"The number of observations with feasible annual income is"</span>, <span class="fu">nrow</span>(salary.income)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "The number of observations with feasible annual income is 23071"</code></pre>
+</div>
+</div>
+</section>
+<section id="f.-whether-there-is-a-statistical-association-between-education-and-salary-controlling-for-years-of-experience." class="level4">
+<h4 class="anchored" data-anchor-id="f.-whether-there-is-a-statistical-association-between-education-and-salary-controlling-for-years-of-experience.">f.&nbsp;whether there is a statistical association between education and salary, controlling for years of experience.</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(salary.income<span class="sc">$</span>Education, <span class="at">useNA =</span> <span class="st">"always"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+                                                       College degree 
+                               150                              11245 
+                       High School                    Master's degree 
+                               395                               7432 
+                               PhD Professional degree (MD, JD, etc.) 
+                              1103                               1127 
+                      Some college                               &lt;NA&gt; 
+                              1619                                  0 </code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>salary.income[salary.income<span class="sc">$</span>Education <span class="sc">==</span> <span class="st">""</span>, <span class="st">"Education"</span>] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>salary.income<span class="sc">$</span>Education <span class="ot">&lt;-</span> <span class="fu">factor</span>(salary.income<span class="sc">$</span>Education, </span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>                                <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"High School"</span>, <span class="st">"Some college"</span>, <span class="st">"College degree"</span>, <span class="st">"Master's degree"</span>, </span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a>                                           <span class="st">"Professional degree (MD, JD, etc.)"</span>, <span class="st">"PhD"</span>), </span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a>                                <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"High School"</span>, <span class="st">"Some college"</span>, <span class="st">"College degree"</span>, <span class="st">"Master's degree"</span>, </span>
+<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a>                                           <span class="st">"Professional degree (MD, JD, etc.)"</span>, <span class="st">"PhD"</span>))</span>
+<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-8"><a href="#cb52-8" aria-hidden="true" tabindex="-1"></a>lin <span class="ot">&lt;-</span> <span class="fu">lm</span>(Annual.salary <span class="sc">~</span> Education <span class="sc">+</span> <span class="fu">as.numeric</span>(Total.years), <span class="at">data =</span> salary.income)</span>
+<span id="cb52-9"><a href="#cb52-9" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lin)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = Annual.salary ~ Education + as.numeric(Total.years), 
+    data = salary.income)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-148687  -31996  -11669   18469 4883720 
+
+Coefficients:
+                                            Estimate Std. Error t value
+(Intercept)                                  32488.2     3901.3   8.327
+EducationSome college                         2636.0     3952.0   0.667
+EducationCollege degree                      17852.6     3611.1   4.944
+EducationMaster's degree                     21318.4     3637.5   5.861
+EducationProfessional degree (MD, JD, etc.)  71543.1     4121.0  17.361
+EducationPhD                                 41134.7     4133.7   9.951
+as.numeric(Total.years)                       8931.1      344.2  25.949
+                                            Pr(&gt;|t|)    
+(Intercept)                                  &lt; 2e-16 ***
+EducationSome college                          0.505    
+EducationCollege degree                     7.71e-07 ***
+EducationMaster's degree                    4.67e-09 ***
+EducationProfessional degree (MD, JD, etc.)  &lt; 2e-16 ***
+EducationPhD                                 &lt; 2e-16 ***
+as.numeric(Total.years)                      &lt; 2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 70420 on 22914 degrees of freedom
+  (150 observations deleted due to missingness)
+Multiple R-squared:  0.05992,   Adjusted R-squared:  0.05967 
+F-statistic: 243.4 on 6 and 22914 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">"The assocaiton between education and salary, controlling for years of experience is statistically significant, </span></span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a><span class="st">      where higher education is associated with higher salary"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "The assocaiton between education and salary, controlling for years of experience is statistically significant, \n      where higher education is associated with higher salary"</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="problem-3---palindromic-numbers" class="level1">
+<h1>Problem 3 - Palindromic Numbers</h1>
+<section id="write-function-ispalindromic-that-checks-if-a-given-positive-integer-is-a-palindrome" class="level4">
+<h4 class="anchored" data-anchor-id="write-function-ispalindromic-that-checks-if-a-given-positive-integer-is-a-palindrome">Write function isPalindromic that checks if a given positive integer is a palindrome</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="co">#' First to create a function to reverse integer</span></span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param x a integer input</span></span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a><span class="co">#' @return The integer with reversed digits </span></span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a>reverse <span class="ot">&lt;-</span> <span class="cf">function</span>(x){</span>
+<span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a>  b <span class="ot">&lt;-</span> <span class="fu">as.character</span>(x)</span>
+<span id="cb56-7"><a href="#cb56-7" aria-hidden="true" tabindex="-1"></a>  char <span class="ot">&lt;-</span> <span class="fu">as.character</span>(x)</span>
+<span id="cb56-8"><a href="#cb56-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nchar</span>(x)) {</span>
+<span id="cb56-9"><a href="#cb56-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">substring</span>(char, i, i) <span class="ot">&lt;-</span> <span class="fu">substring</span>(b, (<span class="fu">nchar</span>(x) <span class="sc">+</span> <span class="dv">1</span> <span class="sc">-</span> i), (<span class="fu">nchar</span>(x) <span class="sc">+</span> <span class="dv">1</span> <span class="sc">-</span> i))</span>
+<span id="cb56-10"><a href="#cb56-10" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb56-11"><a href="#cb56-11" aria-hidden="true" tabindex="-1"></a>  num <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(char)</span>
+<span id="cb56-12"><a href="#cb56-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(num)</span>
+<span id="cb56-13"><a href="#cb56-13" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb56-14"><a href="#cb56-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-15"><a href="#cb56-15" aria-hidden="true" tabindex="-1"></a><span class="co">#' Now is the function to check if the input is palindromic number</span></span>
+<span id="cb56-16"><a href="#cb56-16" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param x is the input </span></span>
+<span id="cb56-17"><a href="#cb56-17" aria-hidden="true" tabindex="-1"></a><span class="co">#' @return a list with logical value of if the input is palindromic number and number with reversed digits</span></span>
+<span id="cb56-18"><a href="#cb56-18" aria-hidden="true" tabindex="-1"></a>isPalindromic <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb56-19"><a href="#cb56-19" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.numeric</span>(x)) {</span>
+<span id="cb56-20"><a href="#cb56-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">warning</span>(<span class="st">"Input must be numeric, trying to convert it"</span>)</span>
+<span id="cb56-21"><a href="#cb56-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">suppressWarnings</span>(y <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(x))</span>
+<span id="cb56-22"><a href="#cb56-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">all</span>(<span class="fu">is.na</span>(y))) {</span>
+<span id="cb56-23"><a href="#cb56-23" aria-hidden="true" tabindex="-1"></a>      <span class="fu">stop</span>(<span class="st">"Please input numberic value, or value convertible to number"</span>)</span>
+<span id="cb56-24"><a href="#cb56-24" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> <span class="cf">if</span> (y <span class="sc">==</span> <span class="fu">round</span>(y)){</span>
+<span id="cb56-25"><a href="#cb56-25" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (y <span class="sc">==</span> <span class="fu">reverse</span>(y)){</span>
+<span id="cb56-26"><a href="#cb56-26" aria-hidden="true" tabindex="-1"></a>        logis <span class="ot">&lt;-</span> <span class="cn">TRUE</span></span>
+<span id="cb56-27"><a href="#cb56-27" aria-hidden="true" tabindex="-1"></a>      } <span class="cf">else</span> {</span>
+<span id="cb56-28"><a href="#cb56-28" aria-hidden="true" tabindex="-1"></a>        logis <span class="ot">&lt;-</span> <span class="cn">FALSE</span></span>
+<span id="cb56-29"><a href="#cb56-29" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb56-30"><a href="#cb56-30" aria-hidden="true" tabindex="-1"></a>      ll <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">isPalindromic =</span> logis,</span>
+<span id="cb56-31"><a href="#cb56-31" aria-hidden="true" tabindex="-1"></a>             <span class="at">reversed =</span> <span class="fu">reverse</span>(x))</span>
+<span id="cb56-32"><a href="#cb56-32" aria-hidden="true" tabindex="-1"></a>      <span class="fu">return</span>(ll)</span>
+<span id="cb56-33"><a href="#cb56-33" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
+<span id="cb56-34"><a href="#cb56-34" aria-hidden="true" tabindex="-1"></a>      <span class="fu">stop</span>(<span class="st">"Please input integer, or convertible integer"</span>)</span>
+<span id="cb56-35"><a href="#cb56-35" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb56-36"><a href="#cb56-36" aria-hidden="true" tabindex="-1"></a>  } </span>
+<span id="cb56-37"><a href="#cb56-37" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">is.numeric</span>(x)) {</span>
+<span id="cb56-38"><a href="#cb56-38" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (x <span class="sc">==</span> <span class="fu">round</span>(x)){</span>
+<span id="cb56-39"><a href="#cb56-39" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (x <span class="sc">==</span> <span class="fu">reverse</span>(x)){</span>
+<span id="cb56-40"><a href="#cb56-40" aria-hidden="true" tabindex="-1"></a>        logis <span class="ot">&lt;-</span> <span class="cn">TRUE</span></span>
+<span id="cb56-41"><a href="#cb56-41" aria-hidden="true" tabindex="-1"></a>      } <span class="cf">else</span> {</span>
+<span id="cb56-42"><a href="#cb56-42" aria-hidden="true" tabindex="-1"></a>        logis <span class="ot">&lt;-</span> <span class="cn">FALSE</span></span>
+<span id="cb56-43"><a href="#cb56-43" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb56-44"><a href="#cb56-44" aria-hidden="true" tabindex="-1"></a>      ll <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">isPalindromic =</span> logis,</span>
+<span id="cb56-45"><a href="#cb56-45" aria-hidden="true" tabindex="-1"></a>             <span class="at">reversed =</span> <span class="fu">reverse</span>(x))</span>
+<span id="cb56-46"><a href="#cb56-46" aria-hidden="true" tabindex="-1"></a>      <span class="fu">return</span>(ll)</span>
+<span id="cb56-47"><a href="#cb56-47" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
+<span id="cb56-48"><a href="#cb56-48" aria-hidden="true" tabindex="-1"></a>      <span class="fu">stop</span>(<span class="st">"Please input integer"</span>)</span>
+<span id="cb56-49"><a href="#cb56-49" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb56-50"><a href="#cb56-50" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb56-51"><a href="#cb56-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-52"><a href="#cb56-52" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="create-a-function-nextpalindrome-that-finds-the-next-palindromic-number-strictly-greater-than-the-input" class="level4">
+<h4 class="anchored" data-anchor-id="create-a-function-nextpalindrome-that-finds-the-next-palindromic-number-strictly-greater-than-the-input">Create a function nextPalindrome that finds the next palindromic number strictly greater than the input</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="co">#' Now is the function to find the next palindromic number strictly greater than the input</span></span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param x is the input. </span></span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a><span class="co">#' @param x if has decimal, will round it to ceiling </span></span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a><span class="co">#' @return the next palindromic number strictly greater than the input</span></span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a>nextPalindromic <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb57-7"><a href="#cb57-7" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.numeric</span>(x)) {</span>
+<span id="cb57-8"><a href="#cb57-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">warning</span>(<span class="st">"Input must be numeric, trying to convert it"</span>)</span>
+<span id="cb57-9"><a href="#cb57-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">suppressWarnings</span>(y <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(x))</span>
+<span id="cb57-10"><a href="#cb57-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">all</span>(<span class="fu">is.na</span>(y))) {</span>
+<span id="cb57-11"><a href="#cb57-11" aria-hidden="true" tabindex="-1"></a>      <span class="fu">stop</span>(<span class="st">"Please input numberic value, or value convertible to number"</span>)</span>
+<span id="cb57-12"><a href="#cb57-12" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> <span class="cf">if</span> (y <span class="sc">==</span> <span class="fu">round</span>(y)){</span>
+<span id="cb57-13"><a href="#cb57-13" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (y <span class="sc">==</span> <span class="fu">reverse</span>(y)){</span>
+<span id="cb57-14"><a href="#cb57-14" aria-hidden="true" tabindex="-1"></a>        y <span class="ot">&lt;-</span> y <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb57-15"><a href="#cb57-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">while</span> (y <span class="sc">!=</span> <span class="fu">reverse</span>(y)) {</span>
+<span id="cb57-16"><a href="#cb57-16" aria-hidden="true" tabindex="-1"></a>        y <span class="ot">=</span> y <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb57-17"><a href="#cb57-17" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb57-18"><a href="#cb57-18" aria-hidden="true" tabindex="-1"></a>        <span class="fu">return</span>(<span class="fu">paste</span>(<span class="st">"Already a palindromic number. The next one is"</span>, y))</span>
+<span id="cb57-19"><a href="#cb57-19" aria-hidden="true" tabindex="-1"></a>      } <span class="cf">else</span> {</span>
+<span id="cb57-20"><a href="#cb57-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">while</span> (y <span class="sc">!=</span> <span class="fu">reverse</span>(y)) {</span>
+<span id="cb57-21"><a href="#cb57-21" aria-hidden="true" tabindex="-1"></a>        y <span class="ot">&lt;-</span> y <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb57-22"><a href="#cb57-22" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb57-23"><a href="#cb57-23" aria-hidden="true" tabindex="-1"></a>      <span class="fu">return</span>(y)</span>
+<span id="cb57-24"><a href="#cb57-24" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb57-25"><a href="#cb57-25" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
+<span id="cb57-26"><a href="#cb57-26" aria-hidden="true" tabindex="-1"></a>      <span class="fu">warning</span>(<span class="st">"Round it to ceiling number"</span>)</span>
+<span id="cb57-27"><a href="#cb57-27" aria-hidden="true" tabindex="-1"></a>      <span class="fu">suppressWarnings</span>(z <span class="ot">&lt;-</span> <span class="fu">ceiling</span>(y))</span>
+<span id="cb57-28"><a href="#cb57-28" aria-hidden="true" tabindex="-1"></a>      <span class="cf">while</span> (z <span class="sc">!=</span> <span class="fu">reverse</span>(z)) {</span>
+<span id="cb57-29"><a href="#cb57-29" aria-hidden="true" tabindex="-1"></a>        z <span class="ot">&lt;-</span> z <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb57-30"><a href="#cb57-30" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb57-31"><a href="#cb57-31" aria-hidden="true" tabindex="-1"></a>      <span class="fu">return</span>(z)</span>
+<span id="cb57-32"><a href="#cb57-32" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb57-33"><a href="#cb57-33" aria-hidden="true" tabindex="-1"></a>  } </span>
+<span id="cb57-34"><a href="#cb57-34" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">is.numeric</span>(x)) {</span>
+<span id="cb57-35"><a href="#cb57-35" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (x <span class="sc">==</span> <span class="fu">round</span>(x)){</span>
+<span id="cb57-36"><a href="#cb57-36" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (x <span class="sc">!=</span> <span class="fu">reverse</span>(x)){</span>
+<span id="cb57-37"><a href="#cb57-37" aria-hidden="true" tabindex="-1"></a>        <span class="cf">while</span> (x <span class="sc">!=</span> <span class="fu">reverse</span>(x)) {</span>
+<span id="cb57-38"><a href="#cb57-38" aria-hidden="true" tabindex="-1"></a>        x <span class="ot">&lt;-</span> x <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb57-39"><a href="#cb57-39" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb57-40"><a href="#cb57-40" aria-hidden="true" tabindex="-1"></a>      <span class="fu">return</span>(x)} <span class="cf">else</span> {</span>
+<span id="cb57-41"><a href="#cb57-41" aria-hidden="true" tabindex="-1"></a>        x <span class="ot">&lt;-</span> x <span class="sc">+</span><span class="dv">1</span> </span>
+<span id="cb57-42"><a href="#cb57-42" aria-hidden="true" tabindex="-1"></a>        <span class="cf">while</span> (x <span class="sc">!=</span> <span class="fu">reverse</span>(x)) {</span>
+<span id="cb57-43"><a href="#cb57-43" aria-hidden="true" tabindex="-1"></a>        x <span class="ot">=</span> x <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb57-44"><a href="#cb57-44" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb57-45"><a href="#cb57-45" aria-hidden="true" tabindex="-1"></a>      <span class="fu">return</span>(<span class="fu">paste</span>(<span class="st">"Already a palindromic number. The next one is"</span>, x))</span>
+<span id="cb57-46"><a href="#cb57-46" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb57-47"><a href="#cb57-47" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb57-48"><a href="#cb57-48" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
+<span id="cb57-49"><a href="#cb57-49" aria-hidden="true" tabindex="-1"></a>      <span class="fu">warning</span>(<span class="st">"Round it to ceiling number"</span>)</span>
+<span id="cb57-50"><a href="#cb57-50" aria-hidden="true" tabindex="-1"></a>      <span class="fu">suppressWarnings</span>(x <span class="ot">&lt;-</span> <span class="fu">ceiling</span>(x))</span>
+<span id="cb57-51"><a href="#cb57-51" aria-hidden="true" tabindex="-1"></a>      <span class="cf">while</span> (x <span class="sc">!=</span> <span class="fu">reverse</span>(x)) {</span>
+<span id="cb57-52"><a href="#cb57-52" aria-hidden="true" tabindex="-1"></a>        x <span class="ot">&lt;-</span> x <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb57-53"><a href="#cb57-53" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb57-54"><a href="#cb57-54" aria-hidden="true" tabindex="-1"></a>      <span class="fu">return</span>(x)</span>
+<span id="cb57-55"><a href="#cb57-55" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb57-56"><a href="#cb57-56" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb57-57"><a href="#cb57-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-58"><a href="#cb57-58" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="use-these-functions-to-find-the-next-palindrome-for-each-of-the-following" class="level4">
+<h4 class="anchored" data-anchor-id="use-these-functions-to-find-the-next-palindrome-for-each-of-the-following">Use these functions to find the next palindrome for each of the following:</h4>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nextPalindromic</span>(<span class="dv">391</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 393</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nextPalindromic</span>(<span class="dv">9928</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 9999</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nextPalindromic</span>(<span class="dv">19272719</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 19277291</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nextPalindromic</span>(<span class="dv">109</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 111</code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nextPalindromic</span>(<span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Already a palindromic number. The next one is 3"</code></pre>
+</div>
+</div>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
