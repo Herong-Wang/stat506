@@ -1,0 +1,250 @@
+---
+title: "Problem set 2"
+author: "Herong Wang"
+format: 
+  html:
+    embed-resources: true
+    code-fold: true
+    code-summary: "Show the code"
+editor: visual
+---
+
+## Github repo link: https://github.com/Herong-Wang/stat506
+## Problem 1
+
+#### 1.a. Version 1: Implement this game using a loop.
+
+```{r}
+#' This calculate the total winnings 
+#' @param x the number of dice to roll
+#' @param m the random sample simulating x times rollings
+#' @param n the logic vector for if the roll wins (3/5)
+#' @return the total winnings when twice for 3 or 5, otherwise lose 
+play_dice_1 <- function(x){
+  m <- sample(1:6, size = x, replace = TRUE)
+  n <- rep(NA, x)
+  t <- 0
+  for (i in 1:x){
+    if (m[i] == 3|m[i] == 5){
+      t <- t + 2
+    } else {
+      t <- t - 2
+    }
+  }
+  return(t)
+}
+
+
+play_dice_1(10)
+```
+
+#### 1.a. Version 2: Implement this game using built-in R vectorized functions.
+
+```{r}
+#' This calculate the total winnings 
+#' @param x the number of dice to roll
+#' @param m the random sample simulating x times rolling
+#' @param n the logic vector for if the roll wins (3/5)
+#' @return the total winnings when twice for 3 or 5, otherwise lose
+play_dice_2 <- function(x){
+  m <- sample(1:6, size = x, replace = TRUE)
+  n <- m==3|m==5
+  t <- 2*sum(n) - 2*(x-sum(n))
+  return(t)
+  
+}
+
+
+play_dice_2(10)
+
+```
+
+#### 1.a Version 3: Implement this by rolling all the dice into one and collapsing the die rolls into a single table()
+
+```{r}
+#' This calculate the total winnings 
+#' @param x the number of dice to roll
+#' @param m the random sample simulating x times rolling
+#' @param n the logic vector for if the roll wins (3/5)
+#' @return the total winnings when twice for 3 or 5, otherwise lose
+play_dice_3 <- function(x){
+  m <- as.table(sample(1:6, size = x, replace = TRUE))
+  n <- m==3|m==5
+  t <- 2*sum(n) - 2*(x-sum(n))
+  return(t)
+}
+
+
+play_dice_3(10)
+```
+
+#### 1.a. Version 4: Implement this game by using one of the “apply” functions.
+
+```{r}
+#' This calculate the total winnings 
+#' @param x the number of dice to roll
+#' @param m the random sample simulating x times rolling
+#' @param n the logic vector for if the roll wins (3/5)
+#' @return the total winnings when twice for 3 or 5, otherwise lose
+play_dice_4 <- function(x){
+  m <- sample(1:6, size = x, replace = TRUE)
+  n <- sapply(m, function(y) y==3|y==5)
+  t <- 2*sum(n) - 2*(x - sum(n))
+  return(t)
+}
+
+
+play_dice_4(10)
+```
+
+#### 1.b. Demonstrate that all versions work
+
+```{r}
+play_dice_1(3)
+play_dice_1(3000)
+
+play_dice_2(3)
+play_dice_2(3000)
+
+play_dice_3(3)
+play_dice_3(3000)
+
+play_dice_4(3)
+play_dice_4(3000)
+```
+
+#### 1.c. Demonstrate that the four versions give the same result
+
+```{r}
+set.seed(2024)
+play_dice_1(3)
+
+set.seed(2024)
+play_dice_2(3)
+
+set.seed(2024)
+play_dice_3(3)
+
+set.seed(2024)
+play_dice_4(3)
+
+set.seed(2024)
+play_dice_1(3000)
+
+set.seed(2024)
+play_dice_2(3000)
+
+set.seed(2024)
+play_dice_3(3000)
+
+set.seed(2024)
+play_dice_4(3000)
+```
+
+#### 1.d. Use the microbenchmark package to clearly demonstrate the speed of the implementations
+
+```{r}
+library(microbenchmark)
+
+microbenchmark(play_dice_1(1000), play_dice_2(1000), play_dice_3(1000), play_dice_4(1000))
+
+microbenchmark(play_dice_1(100000), play_dice_2(100000), play_dice_3(100000), play_dice_4(100000))
+
+print("The second version with built-in R vectorized functions runs fastest.")
+```
+
+#### 1.e. Do you think this is a fair game?
+
+```{r}
+
+# Below I want to see the probability of profiting by this dice game
+## First I want to create a function to roll the dice with input 1 to 100
+
+#' This function will roll the dice with input 1 to 1000
+#' @return the vector of dice game output with 1 to 1000 number of dice to roll
+rolls <- function() {
+  sapply(rep(1:1000), play_dice_2)
+}
+
+## Next I want to replicate the rolling above 1000 times
+a <- replicate(1000, rolls()) # I want to 
+
+## Next I want to create a function to see the probability of getting winnings > 0 under each input among 1000 times
+
+#' This function will calculate the probability with winnings > 0 under each input
+#' @param x the winnings of each input (1 to 1000 number of dice to roll)
+#' @return the probability of winnings > 0
+if_profit <- function(x){
+  m <- x > 0
+  p <- sum(m)/length(x)
+}
+
+hist(apply(a, 2, if_profit))
+
+print("I don't think this is a fair game. We can tell from the histogram that with each input in play_dice_2() function, the probability of having total winnings > 0 is really small (smaller 1%). Therefore, it is highly impossible to win this dice game.")
+```
+
+## Problem 2
+
+#### 2.a. Rename the columns of the data to more reasonable lengths.
+
+```{r}
+cars <- read.csv("C:/Users/herongw/Desktop/Umich_Phd/2024fall/STAT506/Problem_set2/cars.csv")
+colnames(cars)
+colnames(cars) <- c("Height", "Length", "Width", "Driveline", "Engine", "Hybrid", "Forward.Gears",
+                    "Transmission", "City.mpg", "Fuel.Type", "Highway.mpg", "Classification", "ID",
+                    "Make", "Model", "Year", "Horsepower", "Torque")
+colnames(cars)
+```
+
+#### 2.b. Restrict the data to cars whose Fuel Type is “Gasoline”
+
+```{r}
+table(cars$Fuel.Type, useNA = "always")
+cars_2 <- cars[cars$Fuel.Type == "Gasoline", ]
+
+print("The restricted data had 4591 observations")
+```
+
+#### 2.c. Examine the distribution of highway gas mileage.
+
+```{r}
+hist(cars_2$Highway.mpg)
+
+print("Because the distribution of highway gas mileage is highly skewed, I decided to transform using natural logarithms")
+cars_2$Highway.mpg.log <- log(cars_2$Highway.mpg)
+hist(cars_2$Highway.mpg.log)
+```
+
+#### 2.d. it a linear regression model predicting MPG on the highway. The predictor of interest is torque. Control for:The horsepower of the engine + All three dimensions of the car + The year the car was released, as a categorical variable.
+
+```{r}
+mod <- lm(Highway.mpg.log ~ Torque + Horsepower + Height + Length + Width + as.factor(Year), data = cars_2)
+summary(mod)
+
+print("The torque of cars is negatively associated with highway MPG statistically. One unit increase in torque is associated with 0.0023 decrease in log(highway MPG) when controlling for all other covariates")
+```
+
+#### 2.e. Refit the model (with lm) and generate an interaction plot, showing how the relationship between torque and MPG changes as horsepower changes.
+
+```{r}
+library(interactions)
+mod.2 <- lm(Highway.mpg.log ~ Torque + Horsepower + Height + Length + Width + as.factor(Year) + Torque*Horsepower, data = cars_2)
+summary(mod.2)
+
+interact_plot(mod.2, pred = Torque, modx = Horsepower, at = list(Year = 2010),
+              modx.values = c(min(cars_2$Horsepower), median(cars_2$Horsepower), max(cars_2$Horsepower)),
+              y.label = "log(Highway MPG)", main.title = "Interaction plot at Year 2010")
+```
+
+#### 2.f. Calculate beta from d. manually (without using lm) by first creating a proper design matrix, then using matrix algebra to estimate beta
+
+```{r}
+m <- model.matrix(Highway.mpg.log ~ Torque + Horsepower + Height + Length + Width + as.factor(Year), data = cars_2)
+
+beta = solve((t(m) %*% m)) %*% t(m) %*% cars_2$Highway.mpg.log
+
+all.equal(coefficients(mod), beta[, 1])
+
+print("The manually calculated beta is the same as lm() result in 2.d")
+```
