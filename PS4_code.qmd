@@ -1,0 +1,278 @@
+---
+title: "Problem_set4"
+author: "Herong Wang"
+format: 
+  html:
+    embed-resources: true
+    code-fold: true
+    code-summary: "Show the code"
+editor: visual
+---
+
+# Github repo link: https://github.com/Herong-Wang/stat506
+# Problem 1 - Tidyverse
+
+## Basic set up
+
+```{r}
+library(tidyverse)
+library(nycflights13)
+```
+
+## a. Generate a table reporting the mean and median departure delay per airport. Generate a second table reporting the mean and median arrival delay per airport.
+
+```{r}
+flights <- flights
+airports <- airports
+
+# first I will exclude any destination airport with under 10 flights
+flights.2 <- flights %>% 
+  filter(!is.na(dest)) %>% 
+  group_by(dest) %>% 
+  mutate(n=n()) %>% 
+  ungroup() %>% 
+  filter(n>10) %>% 
+  select(-n)
+
+# I am not sure which airport (origin or destination) was asked for to calculate the mean/median delay
+# So I make tables for both
+
+# Here is the table reporting mean and median departure delay per destination airport
+flights.2 %>% 
+  group_by(dest) %>% 
+  summarise(mean = mean(dep_delay, na.rm = TRUE), median = median(dep_delay, na.rm = TRUE)) %>% 
+  ungroup() %>% 
+  left_join(airports, by = c("dest" = "faa")) %>% 
+  select(name, mean, median) %>% 
+  arrange(desc(mean)) %>% 
+  as_tibble(.) %>% 
+  rename("Airport names" = name,
+         "Mean departure delay" = mean,
+         "Median departure delay" = median) %>% 
+  print(., n = nrow(.))
+  
+
+# Here is the table reporting mean and median arrival departure per destination airport
+flights.2 %>% 
+  group_by(dest) %>% 
+  summarise(mean = mean(arr_delay, na.rm = TRUE), median = median(arr_delay, na.rm = TRUE)) %>% 
+  ungroup() %>% 
+  left_join(airports, by = c("dest" = "faa")) %>% 
+  select(name, mean, median) %>% 
+  arrange(desc(mean)) %>% 
+  as_tibble(.) %>% 
+  rename("Airport names" = name,
+         "Mean arrival delay" = mean,
+         "Median arrival delay" = median) %>% 
+  print(., n = nrow(.))
+
+
+# Here is the table reporting mean and median departure delay per original airport
+flights.2 %>% 
+  group_by(origin) %>% 
+  summarise(mean = mean(dep_delay, na.rm = TRUE), median = median(dep_delay, na.rm = TRUE)) %>% 
+  ungroup() %>% 
+  left_join(airports, by = c("origin" = "faa")) %>% 
+  select(name, mean, median) %>% 
+  arrange(desc(mean)) %>% 
+  as_tibble(.) %>% 
+  rename("Airport names" = name,
+         "Mean departure delay" = mean,
+         "Median departure delay" = median)
+  
+
+# Here is the table reporting mean and median arrival departure per original airport
+flights.2 %>% 
+  group_by(origin) %>% 
+  summarise(mean = mean(arr_delay, na.rm = TRUE), median = median(arr_delay, na.rm = TRUE)) %>% 
+  ungroup() %>% 
+  left_join(airports, by = c("origin" = "faa")) %>% 
+  select(name, mean, median) %>% 
+  arrange(desc(mean)) %>% 
+  as_tibble(.) %>% 
+  rename("Airport names" = name,
+         "Mean arrival delay" = mean,
+         "Median arrival delay" = median)
+
+
+```
+
+
+## b. How many flights did the aircraft model with the fastest average speed take? Produce a tibble with 1 row, and entires for the model, average speed (in MPH) and number of flights.
+```{r}
+
+planes <- planes
+
+# First I will merge the flight dataset with plane to get the model name and calculate the speed for each flight
+# speed (MPH) = miles (distance) / hours (air_time(minutes)/60)
+
+flights %>% 
+  mutate(speed = round(distance/(air_time/60), 2)) %>% 
+  left_join(planes[, c("tailnum", "model")], by = "tailnum") %>% 
+  select(model, speed) %>% 
+# Next I will calculate the average speed per model
+  group_by(model) %>% 
+  summarise(n = n(), mean.speed = mean(speed, na.rm = TRUE)) %>% 
+  arrange(desc(mean.speed)) %>% 
+  as_tibble() %>% 
+  rename("Number of flights" = n,
+         "Average speed (MPH)" = mean.speed) %>% 
+  slice(1)
+
+
+```
+
+
+# Problem 2 - get_temp()
+
+```{r error = TRUE}
+nnmaps <- read.csv("chicago-nmmaps.csv")
+
+#' This is a function to get average or other statistics of temperature based on requested month and year
+#'@param month is the requested month input (can only input in month in number, full word, or abbreviation)
+#'@param year is the requested year input (can only from 1997 - 2000)
+#'@param celsius is a logical input on whether convert the temperature to Celsius, default by FALSE
+#'@param average_fn is a function input on what statistics will be used, default by mean()
+#'@return the statistics of the temperature for a given month and a given year
+get_temp <- function(month, year, data, celsius = FALSE, average_fn = mean){
+  data <- data %>% 
+    mutate(month_char = sapply(month_numeric, function(x){
+      switch (x,
+             "January", "Feburary", "March", "April", "May", "June",
+             "July", "August", "September", "October", "November", "December"
+      )
+    })) %>% 
+    rename(m = month)
+
+  
+  if (month %in% data$m | month %in% data$month_numeric | month %in% data$month_char){
+    if (is.numeric(month)){
+      data.month <- data %>% 
+        filter(data$month_numeric == month)
+    } else if (is.character(month) & nchar(month) == 3){
+      data.month <- data %>% 
+        filter(data$m == month)
+    } else if (is.character(month) & nchar(month) > 3){
+      data.month <- data %>% 
+        filter(data$month_char == month)
+    }
+  } else {
+    stop("Please input valid month")}
+  
+  
+  if (!is.numeric(year)){
+    if (is.na(as.numeric(year))){
+      stop("Please input valid year")
+    } else {
+      year.new <- as.numeric(year)
+    }
+  } else if (is.numeric(year) & (year < min(data.month$year) | year > max(data.month$year))){
+    stop(paste("Please input year from", min(data.month$year), "to", max(data.month$year)))
+  } else {
+    year.new <- year
+  }
+    
+  data.year <- data.month %>% 
+    filter(data.month$year == year.new)
+  
+  data.year <- data.year %>% 
+    filter(!is.na(data.year$temp))
+  
+  f <- average_fn(data.year$temp)
+  if (celsius == FALSE){
+    return(f)
+  } else {
+    c <- (f-32)*(5/9)
+    return(c)
+  }
+}
+
+get_temp("Apr", 1999, data = nnmaps)
+get_temp("Apr", 1999, data = nnmaps, celsius = TRUE)
+get_temp(10, 1998, data = nnmaps, average_fn = median)
+get_temp(13, 1998, data = nnmaps)
+get_temp(2, 2005, data = nnmaps)
+get_temp("November", 1999, data =nnmaps, celsius = TRUE,
+         average_fn = function(x) {
+           x %>% sort -> x
+           x[2:(length(x) - 1)] %>% mean %>% return
+         })
+
+
+
+```
+
+# Problem 3 - visualization
+
+## read in dataset
+```{r}
+df <- read.csv("df_for_ml_improved_new_market.csv")
+```
+
+
+## a. Is there a change in the sales price in USD over time?
+```{r}
+
+price <- df %>% 
+  select(year, price_usd) %>% 
+  group_by(year) %>% 
+  summarise(mean = mean(price_usd, na.rm = TRUE), median = median(price_usd, na.rm = TRUE)) %>% 
+  ungroup()
+
+price %>% 
+  mutate(year = as.factor(year)) %>% 
+  pivot_longer(mean:median, names_to = "statistics", values_to = "price") %>% 
+  ggplot(aes(x = year, y = price, color = statistics, group = statistics)) +
+  geom_point()+
+  geom_line()+
+  theme_minimal()+
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust = 1))+
+  labs(title = "Changes in the sales price in USD 1997-2012", x = "Year", y = "Sale price in USD")
+
+print("The plot suggested that the mean and median of sales price in USD increase over time. Even thought there is fluctuation, the overall trend for both mean and median of sales price increase form 1997 to 2008. After 2008, the sale price starts to decrease. ")
+```
+
+## b. Does the distribution of genre of sales across years appear to change?
+```{r}
+genre <- df %>% 
+  select(year, all_of(starts_with("Genre"))) %>% 
+  group_by(year) %>% 
+  summarise(photography = sum(Genre___Photography), prints = sum(Genre___Print), sculpture = sum(Genre___Sculpture), 
+            painting = sum(Genre___Painting), others = sum(Genre___Others)) %>% 
+  pivot_longer(photography:others, names_to = "genre", values_to = "sales")
+
+genre %>% 
+  mutate(year = as.factor(year)) %>% 
+  ggplot(aes(fill = genre, y = sales, x = year))+
+  geom_bar(position = "fill", stat = "identity")+
+  theme_minimal()+
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust = 1))+
+  labs(title = "Distribution of genre of sales across years 1997-2012", x = "Years", y = "Proportion")
+
+print("The plot suggests that the distribution of genre of sales chnage across years. Even thoght there is fluctuation, we can find an overall increasing trend in the proportion of sales in photography and overall decreasing trend in the proportion of sales in others and painting across years. The trends of sales in prints and sculpture are not clear")
+```
+
+## c. How does the genre affect the change in sales price over time?
+```{r}
+df2 <- df %>% 
+  select(year, all_of(starts_with("Genre")), price_usd) %>% 
+  pivot_longer(Genre___Photography:Genre___Others, names_to = "genre", values_to = "sales") %>% 
+  filter(sales == 1) %>% 
+  group_by(year, genre) %>% 
+  summarise(mean = mean(price_usd, na.rm = TRUE)) %>% 
+  ungroup()
+
+df2 %>% 
+  mutate(year = as.factor(year)) %>% 
+  ggplot(aes(x = year, y = mean, color = genre, group = genre)) +
+  geom_point()+
+  geom_line()+
+  theme_minimal()+
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust = 1))+
+  scale_color_discrete(name = "Genre", labels = c("Others", "Painting", "Photography", "Print", "Sculpture"),
+                       guide = guide_legend(reverse=TRUE))+
+  labs(title = "Changes in the sales price in USD by genre 1997-2012", x = "Year", y = "Sale price in USD")
+
+print("The plot suggests that the sale price increases over time from 1997 to 2008 for all other genre except for print. Among all the genre, sale price for photography increase mostly over years. After 2008, the sale price for all genre starts to decreasing. ")
+```
+
