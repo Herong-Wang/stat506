@@ -1,0 +1,347 @@
+---
+title: "Problem set 5"
+author: "Herong Wang"
+format: 
+  html:
+    embed-resources: true
+    code-fold: true
+    code-summary: "Show the code"
+editor: visual
+---
+
+## Github repo link: https://github.com/Herong-Wang/stat506
+## Problem 1 - OOP Programming
+
+### a. define "rational" class
+
+```{r}
+
+# Define a constructor
+setClass("rational",
+         slots = c(a = "ANY",
+                   b = "ANY"))
+
+rational <- function(x1, x2) {
+    return(new("rational", a = as.numeric(x1), b = as.numeric(x2)))
+
+}
+
+# Define a validator
+setValidity("rational", function(object){
+  newa <- as.numeric(object@a)
+  newb <- as.numeric(object@b)
+  if (is.na(newa)|is.na(newb)){
+    stop("Please input valid number")
+  }
+  
+  if (newb == 0) {
+    stop("Denominator cannot be zero")
+  } else if (newa%%1 != 0 | newb%%1 != 0){
+    stop("Please input integer numerator or denominator")
+  }
+  return(TRUE)
+})
+
+
+# Define the show method
+
+##' @title print a `rational`
+##' @param object a `rational` object
+##' @return the numerator and denominator of the `rational` object
+setMethod("show", "rational",
+  function(object) {
+    cat("Numerator:", object@a)
+    cat("\n")
+    cat("Denominator:", object@b)
+    return(invisible(object))
+  }
+)
+
+
+# Create simplify function
+# First I will write a function to calculate greatest common divisor 
+
+##' @title report the greatest common divisor of two integers
+##' @param a is the numerator 
+##' @param b is the denominator
+##' @return the greatest common divisor
+gcb <- function(a, b){
+  if(a == 0 | b == 0){
+    c <- NULL
+    return(c)
+    next()
+  }else if(a <= b){
+    smaller <- a
+  }else if(a > b){
+    smaller <- b
+  }
+  
+  for (i in 1:smaller){
+    if(a%%i == 0 & b%%i == 0){
+      c <- i
+    }
+  }
+  
+  return(c)
+}
+
+
+# Second I will create the simplify function
+
+setGeneric("simplify",
+           function(object) {
+             standardGeneric("simplify")
+           })
+
+##' @title report simplest form a `rational` object
+##' @param object a `rational` object
+##' @return simplest form a `rational` object
+setMethod("simplify", "rational",
+          function(object) {
+            c <- gcb(object@a, object@b)
+            if(length(c) != 0){
+              object@a <- object@a/c
+              object@b <- object@b/c
+            }
+            return(object)
+          })
+
+
+# Create quotient function
+
+setGeneric("quotient",
+           function(object, ...) {
+             standardGeneric("quotient")
+           })
+
+##' @title report quotient a `rational` object
+##' @param object a `rational` object
+##' @return quotient from a `rational` object
+setMethod("quotient", "rational",
+          function(object, digits = 2, ...) {
+            newdig <- as.numeric(digits)
+            if (is.na(newdig)){
+              stop("Please input valid digits number")
+            }else if (newdig%%1 != 0){
+              stop("Please input valid digits number")
+            }else if (newdig%%1 == 0){
+              c <- object@a/object@b
+              print(invisible(c), digits = newdig)
+            }
+            
+          })
+
+
+# Define addition; substraction, multiplication and division function
+
+##' @title `rational` addition arithmetic.
+##' @param e1 A `rational` object
+##' @param e2 A `rational` object
+##' @return A `rational` object
+setMethod("+", signature(e1 = "rational",
+                         e2 = "rational"),
+          function(e1, e2) {
+            return(invisible(simplify(rational(e1@a*e2@b + e2@a*e1@b, e1@b*e2@b))))
+          })
+
+##' @title `rational` subtraction arithmetic.
+##' @param e1 A `rational` object
+##' @param e2 A `rational` object
+##' @return A `rational` object
+setMethod("-", signature(e1 = "rational",
+                         e2 = "rational"),
+          function(e1, e2) {
+            return(invisible(simplify(rational(e1@a*e2@b - e2@a*e1@b, e1@b*e2@b))))
+          })
+
+##' @title `rational` multiplication arithmetic.
+##' @param e1 A `rational` object
+##' @param e2 A `rational` object
+##' @return A `rational` object
+setMethod("*", signature(e1 = "rational",
+                         e2 = "rational"),
+          function(e1, e2) {
+            x1 <- simplify(e1)
+            x2 <- simplify(e2)
+            return(invisible(simplify(rational(x1@a*x2@a , x1@b*x2@b))))
+          })
+
+
+##' @title `rational` division arithmetic.
+##' @param e1 A `rational` object
+##' @param e2 A `rational` object
+##' @return A `rational` object
+setMethod("/", signature(e1 = "rational",
+                         e2 = "rational"),
+          function(e1, e2) {
+            x1 <- simplify(e1)
+            x2 <- simplify(e2)
+            return(invisible(simplify(rational(x1@a*x2@b , x1@b*x2@a))))
+          })
+
+```
+
+#### b. evaluate code
+
+```{r, error=TRUE}
+r1 <- rational(24, 6)
+r2 <- rational(7, 230)
+r3 <- rational(0, 4)
+
+r1
+r3
+r1 + r2
+r1 - r2
+r1 * r2
+r1 / r2
+r1 + r3
+r1 * r3  
+r2 / r3
+quotient(r1)
+quotient(r2)
+quotient(r2, digits = 3) 
+quotient(r2, digits = 3.14)
+quotient(r2, digits = "avocado")
+q2 <- quotient(r2, digits = 3) 
+q2
+quotient(r3)
+simplify(r1)
+simplify(r2)
+simplify(r3)
+```
+
+#### c. check malformed input to your constructor
+
+```{r, error=TRUE}
+# if input 0 as denominator
+rational(4,0) # will give error message that "Denominator cannot be zero"
+
+# if input a string
+rational("1", "2") # if the string can be converted to number, it will not report any error
+rational("a", "b") # if not, it will give error message "Please input valid number"
+```
+
+## Problem 2 - plotly
+
+#### basic set up
+
+```{r}
+library(plotly)
+library(ggplot2)
+library(tidyverse)
+df <- read.csv("C:/Users/herongw/Desktop/Umich_Phd/2024fall/STAT506/Problem_set5/df_for_ml_improved_new_market.csv")
+```
+
+#### a. Does the distribution of genre of sales across years appear to change
+
+```{r}
+# First I will clearn the data
+genre <- df %>% 
+  select(year, all_of(starts_with("Genre"))) %>% 
+  mutate(Genre___Others2 = ifelse(Genre___Others==1 & Genre___Painting==1, 0, Genre___Others)) %>%   select(-Genre___Others) %>% 
+  group_by(year) %>% 
+  summarise(photography = sum(Genre___Photography), prints = sum(Genre___Print), sculpture = sum(Genre___Sculpture), painting = sum(Genre___Painting), others = sum(Genre___Others2))%>% 
+  pivot_longer(photography:others, names_to = "genre", values_to = "sales") %>% 
+  group_by(year) %>% 
+  mutate(total = sum(sales), percent = sales/total)
+
+# plot
+p1 <- plot_ly(
+  data = genre, x = ~year, y = ~percent, color = ~genre, type = "bar") |> 
+  layout(barmode = "stack", title = "Genre of sales over years 1997-2012",
+         yaxis = list(title = "Proportion of genre of sales"))
+
+p1
+
+print("The plot suggests that the distribution of genre of sales chnage across years. Even thoght there is fluctuation, we can find an overall increasing trend in the proportion of sales in photography and overall decreasing trend in the proportion of sales in painting across years.")
+```
+
+#### b. sale prices over year and if genre affect it
+
+```{r}
+df2 <- df %>% 
+  mutate(Genre___Others2 = ifelse(Genre___Others==1 & Genre___Painting==1, 0, Genre___Others)) %>%
+  select(-Genre___Others) %>% 
+  rename(Genre___Others = Genre___Others2) %>% 
+  select(year, all_of(starts_with("Genre")), price_usd) %>% 
+  pivot_longer(Genre___Photography:Genre___Others, names_to = "genre", values_to = "sales") %>% 
+  filter(sales == 1) %>% 
+  group_by(year) %>% 
+  mutate(median.overall = median(price_usd, na.rm = TRUE)) %>% 
+  group_by(year, genre) %>% 
+  mutate(median.genre = median(price_usd, na.rm = TRUE)) %>% 
+  ungroup() %>% 
+  select(-price_usd) %>% 
+  distinct(.keep_all = TRUE) %>% 
+  mutate(genre = gsub("Genre___", "", genre))
+
+p <- plot_ly (data = df2) |>
+  add_trace(x = ~year, y = ~median.overall, type = "scatter", mode = "markers+lines") |>
+  add_trace(x = ~year, y = ~median.genre, color = ~genre, type = "scatter", mode = "markers+lines")|> 
+  layout(title = "Sale price over years 1997-2012")
+p
+
+p2 <- p |> layout(updatemenus = list(
+  list(
+    y = 1,
+    buttons = list(
+      list(method = "update",
+           args = list(list(visible =  list(TRUE,FALSE,FALSE,FALSE,FALSE,FALSE)),
+                       list(yaxis = list(title = "Overall median of sales price"))),
+           label = "Overall"),
+
+      list(method = "update",
+           args = list(list(visible =  list(FALSE,TRUE,TRUE,TRUE,TRUE,TRUE)),
+                       list(yaxis = list(title = "Median of sales price by genre"))),
+           label = "By all genre"))
+  )
+))
+
+
+p2
+
+print("Overall, the sale price decreased from 1997 to 2001 then increased from 2001 to 2008 and finally decrease after 2008. If we look at each genre, we can see the similar pattern for sculpture and photograph. The sale price for prints fluctuated and that for painting have a overall increasing trend.")
+```
+
+## Problem 3 - data.table
+
+```{r}
+library(nycflights13)
+library(data.table)
+
+flights <- as.data.table(flights)
+airports <- as.data.table(airports)
+
+
+# Departure
+
+a <- flights[,
+        .(origin,
+          numflight = .N, 
+          mean_delay = mean(dep_delay, na.rm = TRUE),
+          med_delay = median(dep_delay, na.rm = TRUE),
+          faa = origin),
+        by = origin
+        ][numflight >= 10,
+          .(faa, mean_delay, med_delay)
+        ] 
+
+merge(a, airports, by = "faa", all.x = TRUE)[order(-mean_delay),.(name, mean_delay, med_delay)]
+
+
+# Arrival
+
+b <- flights[,
+        .(dest,
+          numflight = .N, 
+          mean_delay = mean(arr_delay, na.rm = TRUE),
+          med_delay = median(arr_delay, na.rm = TRUE),
+          faa = dest),
+        by = dest
+        ][numflight >= 10,
+          .(faa, mean_delay, med_delay)] 
+
+c <- merge(b, airports, by = "faa", all.x = TRUE)[order(-mean_delay),.(mean_delay, med_delay, name = coalesce(name, faa))][order(-mean_delay), .(name, mean_delay, med_delay)]
+
+print(c, n = nrow(c))
+```
