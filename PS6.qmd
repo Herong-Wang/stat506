@@ -1,0 +1,145 @@
+---
+title: "Problem set 6"
+author: "Herong Wang"
+format: 
+  html:
+    embed-resources: true
+    code-fold: true
+    code-summary: "Show the code"
+editor: visual
+---
+
+# Github repo link: https://github.com/Herong-Wang/stat506
+
+## Basic set up
+
+```{r}
+library(DBI)
+library(parallel)
+library(future)
+library(data.table)
+
+## read in SQLite database
+lahman <- dbConnect(RSQLite::SQLite(), "C:/Users/herongw/Desktop/Umich_Phd/2024fall/STAT506/Problem_set6/lahman_1871-2022.sqlite")
+
+## convert "Fielding table" into data frame
+
+field <- dbReadTable(lahman, "Fielding")
+```
+
+## a. Calculate the average RF for each team in the Fielding table. Then carry out a stratified bootstrap by team
+
+```{r}
+## calculate the RF
+field$RF <- 3*((field$PO + field$A)/field$InnOuts)
+
+# when the denominator InnOuts is zero, the RF will be set as zero
+field$RF <- ifelse(field$InnOuts == 0, 0, field$RF)
+
+## calculate the average RF for each team
+rf_est <- aggregate(field$RF, by = list(field$teamID), FUN = mean, na.rm = TRUE)
+rf_est[order(rf_est$x, decreasing = TRUE),][1:10,]
+
+
+## Next to carry out a stratified bootstrap by team
+
+boot <- function(data) {
+  row.id <- aggregate(row.names(data),
+                 by = list(data[["teamID"]]),
+                 FUN = function(x) {
+                   sample(x, replace = TRUE)
+                 })
+  
+  resample <- data[Reduce(c, row.id[["x"]]), ]
+  rf_est <- aggregate(resample[["RF"]],
+                       by = list(resample[["teamID"]]),
+                       FUN = mean, na.rm = TRUE)
+  return(rf_est)
+  
+}
+
+  row.id <- aggregate(row.names(field),
+                 by = list(field[["teamID"]]),
+                 FUN = function(x) {
+                   sample(x, replace = TRUE)
+                 })
+  resample <- field[Reduce(c, row.id[["x"]]), ]
+  
+
+#set.seed(2024)
+#no_p(field)
+
+# 1. without parallel processing
+
+rep <- 1000
+simulation1 <- lapply(seq_len(rep), function(x) boot(field))
+
+
+# 2. parallel processing
+## Note: Windows doesn't allow forking so I use socket here for parallel 
+
+cl <- makeCluster(4)
+clusterExport(cl, c("field", "boot"))
+simulation2 <- parLapply(cl, seq_len(rep), function(x) boot(field))
+stopCluster(cl)
+
+
+# 3. future
+plan(multisession)
+simulation3 <- lapply(seq_len(rep), function(x) {
+                   future(boot(field), seed = TRUE)
+                 })
+simulation3 <- lapply(simulation3, value)
+  
+
+```
+
+## b. Generate a table showing the estimated RF and associated standard errors for the teams with the 10 highest RF from the three approaches.
+
+```{r}
+produce_table <- function(simulation) {
+  sd <- rbindlist(simulation)[, sd(x), by=Group.1][, V1]
+
+  result.table <- data.frame(team = rf_est$Group.1,
+                             mean = rf_est$x,
+                             SD = sd)
+  result.table[order(result.table$mean, decreasing = TRUE), ,drop=FALSE][1:10, ]
+}
+
+# 1. without parallel processing
+produce_table(simulation1)
+
+# 2. parallel processing
+produce_table(simulation2)
+
+# 3. future
+produce_table(simulation3)
+```
+
+## c. Report and discuss the performance difference between the versions.
+
+```{r}
+# 1. without parallel processing
+system.time({
+  simulation1 <- lapply(seq_len(rep), function(x) boot(field))
+})
+
+# 2. parallel processing
+system.time({
+  cl <- makeCluster(4)
+  clusterExport(cl, c("field", "boot"))
+  simulation2 <- parLapply(cl, seq_len(rep), function(x) boot(field))
+  stopCluster(cl)
+})
+
+# 3. future
+plan(multisession)
+system.time({
+  simulation3 <- lapply(seq_len(rep), function(x) {
+                   future(boot(field), seed = TRUE)
+                 })
+  simulation3 <- lapply(simulation3, value)
+})
+
+print("The bootstrap simulation without parallel or future processing took the longest time while the parallel processing took the least amount of user time.")
+```
