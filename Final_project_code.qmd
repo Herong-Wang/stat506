@@ -1,0 +1,119 @@
+---
+title: "Final project"
+author: "Herong Wang"
+format: 
+  html:
+    embed-resources: true
+    code-fold: true
+    code-summary: "Show the code"
+editor: visual
+---
+
+## Basic set up: load packages and read in data
+
+```{r}
+# load libraries
+library(pacman)
+p_load(tidyverse, haven, interactions)
+
+preg <- read_dta("C:/Users/herongw/Desktop/Umich_Phd/2024fall/STAT506/Final_project/data/2017_2019_Preg.dta")
+
+female <- read_dta("C:/Users/herongw/Desktop/Umich_Phd/2024fall/STAT506/Final_project/data/2017_2019_Femresp.dta")
+
+male <- read_dta("C:/Users/herongw/Desktop/Umich_Phd/2024fall/STAT506/Final_project/data/2017_2019_MaleData.dta")
+
+```
+
+## Data cleaning
+
+#### Outcome: PREGEND1 from Female Pregnancy dataset.
+```{r}
+# original variable PREGEND1 will be collapsed into two levels. Miscarriage (1), stillbirth (2), abortion (3), ectopic or tubal pregnancy (4) will be all coded as 1 while live birth by Cesarean/vaginal delivery (5, 6) will be coded as 0. Refused (8) or Don’t know (9) responses will be coded as missing (NA)
+
+preg.fin <- preg %>% 
+  filter(pregordr == 1) %>% 
+  select(caseid, PREGEND1) %>% 
+  mutate(pregend.clean = case_when(PREGEND1 %in% c(5,6) ~ 0,
+                                   PREGEND1 %in% c(1,2,3,4) ~ 1,
+                                   TRUE ~ NA))
+
+table(preg.fin$PREGEND1, preg.fin$pregend.clean, useNA = "always")
+
+preg.fin$pregend.clean <- factor(preg.fin$pregend.clean, levels = c(0,1), labels = c("Live birth", "Adverse birth"))
+```
+
+#### Exposure: mother’s education level. HIGRADE from Female Respondent dataset 
+```{r}
+education.m <- female %>% 
+  select(caseid, higrade)
+```
+
+#### Covariates: mother’s age at the time of conception (AGECON), father’s age at pregnancy’s end date/live birth date (HPAGEEND/ HPAGELB)
+```{r}
+cor <- preg %>% 
+  filter(pregordr == 1) %>% 
+  select(caseid, agecon, hpageend, hpagelb) %>% 
+  mutate(father.age = case_when(!is.na(hpageend)&is.na(hpagelb) ~ hpageend,
+                                is.na(hpageend)&!is.na(hpagelb) ~ hpagelb,
+                                TRUE ~ NA)) %>% 
+  mutate(father.age = if_else(father.age %in% c(98,99), NA, father.age))
+
+```
+
+#### Interaction variable: Father’s education level CHEDMARN frm Female response data
+```{r}
+education.f <- female %>% 
+  select(caseid, chedmarn) %>% 
+  mutate(father.education = case_when(chedmarn %in% c(1,2,3,4,5) ~ "College or less",
+                                      chedmarn == 6 ~ "More than college",
+                                      TRUE ~ NA))
+
+education.f$father.education <- factor(education.f$father.education, levels = c("High school or less", "College or less", "More than college"))
+table(education.f$chedmarn, education.f$father.education, useNA = "always")
+```
+
+#### Merge datasets
+```{r}
+dat <- preg.fin %>% 
+  inner_join(education.m, by = "caseid") %>% 
+  inner_join(cor, by = "caseid") %>% 
+  inner_join(education.f, by = "caseid")
+
+## only include non-missing observations
+var <- c("pregend.clean", "higrade", "agecon", "father.age",  "father.education")
+
+fi.dat <- dat %>% 
+  select(caseid, all_of(var)) %>% 
+  filter(complete.cases(.))
+```
+
+#### fit model
+```{r}
+
+## crude model without covariates and interactive variable
+logit.crude <- glm(pregend.clean ~ higrade, data = fi.dat, family = "binomial")
+summary(logit.crude)
+exp(cbind(OR = coef(logit.crude), confint(logit.crude)))
+
+## adjusted model with covariates but no interaction
+logit.adj <- glm(pregend.clean ~ higrade + agecon + father.age, data = fi.dat, family = "binomial")
+summary(logit.adj)
+exp(cbind(OR = coef(logit.adj), confint(logit.adj)))
+
+## interactive model with both covariates and interaction
+logit.int <- glm(pregend.clean ~ higrade + agecon + father.age + father.education + higrade*father.education, data = fi.dat, family = "binomial")
+summary(logit.int)
+exp(cbind(OR = coef(logit.int), confint(logit.int)))
+```
+
+#### visualization
+```{r}
+interactions::cat_plot(logit.int, pred = higrade, modx = father.education, interval = TRUE, vary.lty = TRUE, geom = "line",
+                       x.label = "Mother's education years", y.label = "Probabilities of ending pregnancy adversely", 
+                       main.title = "The association of mother's education with adverse pregnancy, differed by father's education",
+                       legend.main = "Father's education")
+
+
+
+```
+
